@@ -1,0 +1,54 @@
+service: email-ai-processor-v3
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: dev1
+
+  environment:
+    INVOICE_TABLE_NAME: InvoiceTable-${self:provider.stage}  # 👈 This is what sets process.env.INVOICE_TABLE_NAME
+
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+      - s3:ListBucket
+    Resource:
+      - arn:aws:s3:::email-attachments-bucket-dev-1749037511789
+      - arn:aws:s3:::email-attachments-bucket-dev-1749037511789/*
+  - Effect: Allow
+    Action:
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+    Resource:
+      - arn:aws:dynamodb:${self:provider.region}:*:table/InvoiceTable-${self:provider.stage}
+  - Effect: Allow
+    Action:
+      - textract:AnalyzeDocument
+    Resource:
+      - "*"   # or restrict to specific resources if you want
+
+
+functions:
+  processEmail:
+    handler: handler.processEmail
+    events:
+      - s3:
+          bucket: email-attachments-bucket-dev-1749037511789
+          event: s3:ObjectCreated:*
+          existing: true
+
+resources:
+  Resources:
+    InvoiceTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: InvoiceTable-${self:provider.stage}
+        AttributeDefinitions:
+          - AttributeName: TicketId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: TicketId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST

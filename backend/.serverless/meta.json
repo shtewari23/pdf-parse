@@ -1,0 +1,1124 @@
+{
+  "/Users/shubham/ai-email-processor/backend/serverless.yml": {
+    "versionFramework": "4.16.1",
+    "servicePath": "/Users/shubham/ai-email-processor/backend/serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "email-ai-processor-v3",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs18.x",
+        "region": "us-east-1",
+        "stage": "dev1",
+        "environment": {
+          "INVOICE_TABLE_NAME": "InvoiceTable-dev1"
+        },
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "ProcessEmailLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/email-ai-processor-v3-dev1-processEmail"
+              }
+            },
+            "IamRoleLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "email-ai-processor-v3",
+                          "dev1",
+                          "lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*:*"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Path": "/",
+                "RoleName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "email-ai-processor-v3",
+                      "dev1",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "lambdaRole"
+                    ]
+                  ]
+                }
+              }
+            },
+            "ProcessEmailLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+                  "S3Key": "serverless/email-ai-processor-v3/dev1/1749060974457-2025-06-04T18:16:14.457Z/email-ai-processor-v3.zip"
+                },
+                "Handler": "handler.processEmail",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "email-ai-processor-v3-dev1-processEmail",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "INVOICE_TABLE_NAME": "InvoiceTable-dev1"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "ProcessEmailLogGroup"
+              ]
+            },
+            "ProcessEmailLambdaVersionvmsdqSzidrni2TM4VcA6sH4y7HJO7Pypy9q4WEgS6o": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "ProcessEmailLambdaFunction"
+                },
+                "CodeSha256": "SlCXFYQ6otJ6sfEH1eClyXDW30pBeiN1DJxUw61O+lE="
+              }
+            },
+            "ProcessEmailCustomS31": {
+              "Type": "Custom::S3",
+              "Version": "1.0",
+              "DependsOn": [
+                "ProcessEmailLambdaFunction",
+                "CustomDashresourceDashexistingDashs3LambdaFunction"
+              ],
+              "Properties": {
+                "ServiceToken": "<REDACTED>",
+                "FunctionName": "email-ai-processor-v3-dev1-processEmail",
+                "BucketName": "email-attachments-bucket-dev-1749037511789",
+                "BucketConfigs": [
+                  {
+                    "Event": "s3:ObjectCreated:*",
+                    "Rules": []
+                  }
+                ]
+              }
+            },
+            "IamRoleCustomResourcesLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "dev1",
+                          "email-ai-processor-v3",
+                          "custom-resources-lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Resource": {
+                            "Fn::Join": [
+                              ":",
+                              [
+                                "arn",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                "s3",
+                                "",
+                                "",
+                                "email-attachments-bucket-dev-1749037511789"
+                              ]
+                            ]
+                          },
+                          "Action": [
+                            "s3:PutBucketNotification",
+                            "s3:GetBucketNotification"
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Resource": {
+                            "Fn::Join": [
+                              ":",
+                              [
+                                "arn",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                "lambda",
+                                {
+                                  "Ref": "AWS::Region"
+                                },
+                                {
+                                  "Ref": "AWS::AccountId"
+                                },
+                                "function",
+                                "*"
+                              ]
+                            ]
+                          },
+                          "Action": [
+                            "lambda:AddPermission",
+                            "lambda:RemovePermission"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "CustomDashresourceDashexistingDashs3LambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+                  "S3Key": "serverless/email-ai-processor-v3/dev1/1749060974457-2025-06-04T18:16:14.457Z/custom-resources.zip"
+                },
+                "FunctionName": "email-ai-processor-v3-dev1-custom-resource-existing-s3",
+                "Handler": "s3/handler.handler",
+                "MemorySize": 1024,
+                "Runtime": "nodejs20.x",
+                "Timeout": 180,
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleCustomResourcesLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "IamRoleCustomResourcesLambdaExecution",
+                "CustomDashresourceDashexistingDashs3LogGroup"
+              ]
+            },
+            "CustomDashresourceDashexistingDashs3LogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/email-ai-processor-v3-dev1-custom-resource-existing-s3"
+              }
+            },
+            "InvoiceTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "InvoiceTable-dev1",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "TicketId",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "TicketId",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "BillingMode": "PAY_PER_REQUEST"
+              }
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+              "Export": {
+                "Name": "sls-email-ai-processor-v3-dev1-ServerlessDeploymentBucketName"
+              }
+            },
+            "ProcessEmailLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "ProcessEmailLambdaVersionvmsdqSzidrni2TM4VcA6sH4y7HJO7Pypy9q4WEgS6o"
+              },
+              "Export": {
+                "Name": "sls-email-ai-processor-v3-dev1-ProcessEmailLambdaFunctionQualifiedArn"
+              }
+            }
+          }
+        },
+        "vpc": {}
+      },
+      "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "arn:aws:s3:::email-attachments-bucket-dev-1749037511789",
+            "arn:aws:s3:::email-attachments-bucket-dev-1749037511789/*"
+          ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem"
+          ],
+          "Resource": [
+            "arn:aws:dynamodb:us-east-1:*:table/InvoiceTable-dev1"
+          ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "textract:AnalyzeDocument"
+          ],
+          "Resource": [
+            "*"
+          ]
+        }
+      ],
+      "functions": {
+        "processEmail": {
+          "handler": "handler.processEmail",
+          "events": [
+            {
+              "s3": {
+                "bucket": "email-attachments-bucket-dev-1749037511789",
+                "event": "s3:ObjectCreated:*",
+                "existing": true
+              }
+            }
+          ],
+          "name": "email-ai-processor-v3-dev1-processEmail",
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "ProcessEmailLambdaVersionvmsdqSzidrni2TM4VcA6sH4y7HJO7Pypy9q4WEgS6o"
+        }
+      },
+      "resources": {
+        "Resources": {
+          "InvoiceTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "InvoiceTable-dev1",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "TicketId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "TicketId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          }
+        },
+        "Outputs": {}
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs18.x",
+      "region": "us-east-1",
+      "stage": "dev1",
+      "environment": {
+        "INVOICE_TABLE_NAME": "InvoiceTable-dev1"
+      },
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ProcessEmailLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/email-ai-processor-v3-dev1-processEmail"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "email-ai-processor-v3",
+                        "dev1",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "email-ai-processor-v3",
+                    "dev1",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "ProcessEmailLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+                "S3Key": "serverless/email-ai-processor-v3/dev1/1749060974457-2025-06-04T18:16:14.457Z/email-ai-processor-v3.zip"
+              },
+              "Handler": "handler.processEmail",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "email-ai-processor-v3-dev1-processEmail",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "INVOICE_TABLE_NAME": "InvoiceTable-dev1"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ProcessEmailLogGroup"
+            ]
+          },
+          "ProcessEmailLambdaVersionvmsdqSzidrni2TM4VcA6sH4y7HJO7Pypy9q4WEgS6o": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessEmailLambdaFunction"
+              },
+              "CodeSha256": "SlCXFYQ6otJ6sfEH1eClyXDW30pBeiN1DJxUw61O+lE="
+            }
+          },
+          "ProcessEmailCustomS31": {
+            "Type": "Custom::S3",
+            "Version": "1.0",
+            "DependsOn": [
+              "ProcessEmailLambdaFunction",
+              "CustomDashresourceDashexistingDashs3LambdaFunction"
+            ],
+            "Properties": {
+              "ServiceToken": "<REDACTED>",
+              "FunctionName": "email-ai-processor-v3-dev1-processEmail",
+              "BucketName": "email-attachments-bucket-dev-1749037511789",
+              "BucketConfigs": [
+                {
+                  "Event": "s3:ObjectCreated:*",
+                  "Rules": []
+                }
+              ]
+            }
+          },
+          "IamRoleCustomResourcesLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "dev1",
+                        "email-ai-processor-v3",
+                        "custom-resources-lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Resource": {
+                          "Fn::Join": [
+                            ":",
+                            [
+                              "arn",
+                              {
+                                "Ref": "AWS::Partition"
+                              },
+                              "s3",
+                              "",
+                              "",
+                              "email-attachments-bucket-dev-1749037511789"
+                            ]
+                          ]
+                        },
+                        "Action": [
+                          "s3:PutBucketNotification",
+                          "s3:GetBucketNotification"
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Resource": {
+                          "Fn::Join": [
+                            ":",
+                            [
+                              "arn",
+                              {
+                                "Ref": "AWS::Partition"
+                              },
+                              "lambda",
+                              {
+                                "Ref": "AWS::Region"
+                              },
+                              {
+                                "Ref": "AWS::AccountId"
+                              },
+                              "function",
+                              "*"
+                            ]
+                          ]
+                        },
+                        "Action": [
+                          "lambda:AddPermission",
+                          "lambda:RemovePermission"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "CustomDashresourceDashexistingDashs3LambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+                "S3Key": "serverless/email-ai-processor-v3/dev1/1749060974457-2025-06-04T18:16:14.457Z/custom-resources.zip"
+              },
+              "FunctionName": "email-ai-processor-v3-dev1-custom-resource-existing-s3",
+              "Handler": "s3/handler.handler",
+              "MemorySize": 1024,
+              "Runtime": "nodejs20.x",
+              "Timeout": 180,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleCustomResourcesLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "IamRoleCustomResourcesLambdaExecution",
+              "CustomDashresourceDashexistingDashs3LogGroup"
+            ]
+          },
+          "CustomDashresourceDashexistingDashs3LogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/email-ai-processor-v3-dev1-custom-resource-existing-s3"
+            }
+          },
+          "InvoiceTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "InvoiceTable-dev1",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "TicketId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "TicketId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+            "Export": {
+              "Name": "sls-email-ai-processor-v3-dev1-ServerlessDeploymentBucketName"
+            }
+          },
+          "ProcessEmailLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessEmailLambdaVersionvmsdqSzidrni2TM4VcA6sH4y7HJO7Pypy9q4WEgS6o"
+            },
+            "Export": {
+              "Name": "sls-email-ai-processor-v3-dev1-ProcessEmailLambdaFunctionQualifiedArn"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "service: email-ai-processor-v3\n\nprovider:\n  name: aws\n  runtime: nodejs18.x\n  region: us-east-1\n  stage: dev1\n\n  environment:\n    INVOICE_TABLE_NAME: InvoiceTable-${self:provider.stage}  # 👈 This is what sets process.env.INVOICE_TABLE_NAME\n\niamRoleStatements:\n  - Effect: Allow\n    Action:\n      - s3:GetObject\n      - s3:ListBucket\n    Resource:\n      - arn:aws:s3:::email-attachments-bucket-dev-1749037511789\n      - arn:aws:s3:::email-attachments-bucket-dev-1749037511789/*\n  - Effect: Allow\n    Action:\n      - dynamodb:PutItem\n      - dynamodb:UpdateItem\n    Resource:\n      - arn:aws:dynamodb:${self:provider.region}:*:table/InvoiceTable-${self:provider.stage}\n  - Effect: Allow\n    Action:\n      - textract:AnalyzeDocument\n    Resource:\n      - \"*\"   # or restrict to specific resources if you want\n\n\nfunctions:\n  processEmail:\n    handler: handler.processEmail\n    events:\n      - s3:\n          bucket: email-attachments-bucket-dev-1749037511789\n          event: s3:ObjectCreated:*\n          existing: true\n\nresources:\n  Resources:\n    InvoiceTable:\n      Type: AWS::DynamoDB::Table\n      Properties:\n        TableName: InvoiceTable-${self:provider.stage}\n        AttributeDefinitions:\n          - AttributeName: TicketId\n            AttributeType: S\n        KeySchema:\n          - AttributeName: TicketId\n            KeyType: HASH\n        BillingMode: PAY_PER_REQUEST\n",
+    "command": [
+      "deploy"
+    ],
+    "options": {},
+    "orgId": "9662f955-4267-4047-927f-105963c4f3b3",
+    "orgName": "shtewari23",
+    "userId": "bw5w57g44sXfzczFHw",
+    "userName": "shtewari23",
+    "serviceProviderAwsAccountId": "570790165875",
+    "serviceProviderAwsCfStackName": "email-ai-processor-v3-dev1",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:570790165875:stack/email-ai-processor-v3-dev1/7961da50-413a-11f0-94e1-12f009f7eced",
+    "serviceProviderAwsCfStackCreated": "2025-06-04T11:53:05.000Z",
+    "serviceProviderAwsCfStackUpdated": "2025-06-04T15:35:16.284Z",
+    "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "ProcessEmailLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:570790165875:function:email-ai-processor-v3-dev1-processEmail:9",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-email-ai-processor-v3-dev1-ProcessEmailLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+        "ExportName": "sls-email-ai-processor-v3-dev1-ServerlessDeploymentBucketName"
+      }
+    ],
+    "compiledCloudFormationTemplate": {
+      "AWSTemplateFormatVersion": "2010-09-09",
+      "Description": "The AWS CloudFormation template for this Serverless application",
+      "Resources": {
+        "ProcessEmailLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/email-ai-processor-v3-dev1-processEmail"
+          }
+        },
+        "IamRoleLambdaExecution": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": [
+                    "sts:AssumeRole"
+                  ]
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "email-ai-processor-v3",
+                      "dev1",
+                      "lambda"
+                    ]
+                  ]
+                },
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogStream",
+                        "logs:CreateLogGroup",
+                        "logs:TagResource"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*:*"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "Path": "/",
+            "RoleName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "email-ai-processor-v3",
+                  "dev1",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "lambdaRole"
+                ]
+              ]
+            }
+          }
+        },
+        "ProcessEmailLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+              "S3Key": "serverless/email-ai-processor-v3/dev1/1749060974457-2025-06-04T18:16:14.457Z/email-ai-processor-v3.zip"
+            },
+            "Handler": "handler.processEmail",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "email-ai-processor-v3-dev1-processEmail",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "INVOICE_TABLE_NAME": "InvoiceTable-dev1"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "ProcessEmailLogGroup"
+          ]
+        },
+        "ProcessEmailLambdaVersionvmsdqSzidrni2TM4VcA6sH4y7HJO7Pypy9q4WEgS6o": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "ProcessEmailLambdaFunction"
+            },
+            "CodeSha256": "SlCXFYQ6otJ6sfEH1eClyXDW30pBeiN1DJxUw61O+lE="
+          }
+        },
+        "ProcessEmailCustomS31": {
+          "Type": "Custom::S3",
+          "Version": "1.0",
+          "DependsOn": [
+            "ProcessEmailLambdaFunction",
+            "CustomDashresourceDashexistingDashs3LambdaFunction"
+          ],
+          "Properties": {
+            "ServiceToken": "<REDACTED>",
+            "FunctionName": "email-ai-processor-v3-dev1-processEmail",
+            "BucketName": "email-attachments-bucket-dev-1749037511789",
+            "BucketConfigs": [
+              {
+                "Event": "s3:ObjectCreated:*",
+                "Rules": []
+              }
+            ]
+          }
+        },
+        "IamRoleCustomResourcesLambdaExecution": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": [
+                    "sts:AssumeRole"
+                  ]
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "dev1",
+                      "email-ai-processor-v3",
+                      "custom-resources-lambda"
+                    ]
+                  ]
+                },
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogStream",
+                        "logs:CreateLogGroup",
+                        "logs:TagResource"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/email-ai-processor-v3-dev1*:*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Resource": {
+                        "Fn::Join": [
+                          ":",
+                          [
+                            "arn",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            "s3",
+                            "",
+                            "",
+                            "email-attachments-bucket-dev-1749037511789"
+                          ]
+                        ]
+                      },
+                      "Action": [
+                        "s3:PutBucketNotification",
+                        "s3:GetBucketNotification"
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Resource": {
+                        "Fn::Join": [
+                          ":",
+                          [
+                            "arn",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            "lambda",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            "function",
+                            "*"
+                          ]
+                        ]
+                      },
+                      "Action": [
+                        "lambda:AddPermission",
+                        "lambda:RemovePermission"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "CustomDashresourceDashexistingDashs3LambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+              "S3Key": "serverless/email-ai-processor-v3/dev1/1749060974457-2025-06-04T18:16:14.457Z/custom-resources.zip"
+            },
+            "FunctionName": "email-ai-processor-v3-dev1-custom-resource-existing-s3",
+            "Handler": "s3/handler.handler",
+            "MemorySize": 1024,
+            "Runtime": "nodejs20.x",
+            "Timeout": 180,
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleCustomResourcesLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "IamRoleCustomResourcesLambdaExecution",
+            "CustomDashresourceDashexistingDashs3LogGroup"
+          ]
+        },
+        "CustomDashresourceDashexistingDashs3LogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/email-ai-processor-v3-dev1-custom-resource-existing-s3"
+          }
+        },
+        "InvoiceTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "InvoiceTable-dev1",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "TicketId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "TicketId",
+                "KeyType": "HASH"
+              }
+            ],
+            "BillingMode": "PAY_PER_REQUEST"
+          }
+        }
+      },
+      "Outputs": {
+        "ServerlessDeploymentBucketName": {
+          "Value": "serverless-framework-deployments-us-east-1-e1ecc870-a824",
+          "Export": {
+            "Name": "sls-email-ai-processor-v3-dev1-ServerlessDeploymentBucketName"
+          }
+        },
+        "ProcessEmailLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "ProcessEmailLambdaVersionvmsdqSzidrni2TM4VcA6sH4y7HJO7Pypy9q4WEgS6o"
+          },
+          "Export": {
+            "Name": "sls-email-ai-processor-v3-dev1-ProcessEmailLambdaFunctionQualifiedArn"
+          }
+        }
+      }
+    }
+  }
+}

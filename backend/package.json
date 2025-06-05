@@ -1,0 +1,17 @@
+{
+  "name": "email-processor-backend",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "type": "module",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.4.0",
+    "mailparser": "^3.6.5",
+    "pdf-parse": "^1.1.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "serverless-plugin-include-dependencies": "^6.1.1"
+  }
+}
